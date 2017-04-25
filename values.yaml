@@ -5,7 +5,8 @@ global:
     pullPolicy: Always
   env:
     CLUSTER_NAME: "myesdb"
-    NETWORK_HOST: "_eth0_"
+    # Uncomment this if you get the "No up-and-running site-local (private) addresses" error
+    # NETWORK_HOST: "_eth0_"
 
 client:
   replicas: 2
