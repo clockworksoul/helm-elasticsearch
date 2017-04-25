@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: es-data
+  labels:
+    component: elasticsearch
+    role: data
+spec:
+  replicas: {{ .Values.data.replicas }}
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+        role: data
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+          "name": "sysctl",
+            "image": "busybox",
+            "imagePullPolicy": "IfNotPresent",
+            "command": ["sysctl", "-w", "vm.max_map_count=262144"],
+            "securityContext": {
+              "privileged": true
+            }
+          }
+        ]'
+    spec:
+      containers:
+      - name: es-data
+        securityContext:
+          privileged: false
+          capabilities:
+            add:
+              - IPC_LOCK
+              - SYS_RESOURCE
+        image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}"
+        imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        {{- range $key, $value :=  .Values.global.env }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- range $key, $value :=  .Values.data.env }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          value: {{ $value | quote }}
+        {{- end }}
+        ports:
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        volumeMounts:
+        - name: storage
+          mountPath: /data
+      volumes:
+        - emptyDir:
+            medium: ""
+          name: "storage"

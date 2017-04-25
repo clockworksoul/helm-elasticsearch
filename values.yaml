@@ -1,0 +1,44 @@
+global:
+  image:
+    repository: quay.io/pires/docker-elasticsearch-kubernetes
+    tag: 5.3.0
+    pullPolicy: Always
+  env:
+    CLUSTER_NAME: "myesdb"
+    NETWORK_HOST: "_eth0_"
+
+client:
+  image:
+    repository: seamlessdocs/logstash
+    tag: 2.3
+    pullPolicy: Always
+  replicas: 2
+  env:
+    NODE_MASTER: "false"
+    NODE_DATA: "false"
+    HTTP_ENABLE: "true"
+    ES_JAVA_OPTS: "-Xms256m -Xmx256m"
+
+data:
+  image:
+    repository: seamlessdocs/logstash
+    tag: 2.3
+    pullPolicy: Always
+  replicas: 2
+  env:
+    NODE_MASTER: "false"
+    NODE_INGEST: "false"
+    HTTP_ENABLE: "false"
+    ES_JAVA_OPTS: "-Xms256m -Xmx256m"
+
+master:
+  # Master replica count should be (#clients / 2) + 1.
+  replicas: 3
+  env:
+    NUMBER_OF_MASTERS: "2"
+    NODE_MASTER: "true"
+    NODE_INGEST: "false"
+    NODE_DATA: "false"
+    HTTP_ENABLE: "false"
+    ES_JAVA_OPTS: "-Xms256m -Xmx256m"
+
