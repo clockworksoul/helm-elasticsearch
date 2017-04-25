@@ -44,6 +44,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: DISCOVERY_SERVICE
+          value: {{template "fullname" .}}-discovery
         {{- range $key, $value :=  .Values.global.env }}
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
