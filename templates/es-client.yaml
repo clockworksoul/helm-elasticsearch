@@ -1,16 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: es-client
+  name: {{template "fullname" .}}-client
   labels:
-    component: elasticsearch
+    component: {{template "fullname" .}}
     role: client
 spec:
   replicas: {{ .Values.client.replicas }}
   template:
     metadata:
       labels:
-        component: elasticsearch
+        component: {{template "fullname" .}}
         role: client
       annotations:
         pod.beta.kubernetes.io/init-containers: '[

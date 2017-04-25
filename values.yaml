@@ -8,10 +8,6 @@ global:
     NETWORK_HOST: "_eth0_"
 
 client:
-  image:
-    repository: seamlessdocs/logstash
-    tag: 2.3
-    pullPolicy: Always
   replicas: 2
   env:
     NODE_MASTER: "false"
@@ -20,10 +16,6 @@ client:
     ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
 data:
-  image:
-    repository: seamlessdocs/logstash
-    tag: 2.3
-    pullPolicy: Always
   replicas: 2
   env:
     NODE_MASTER: "false"

@@ -1,17 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: elasticsearch
+  name: {{template "fullname" .}}
   labels:
-    component: elasticsearch
+    component: {{template "fullname" .}}
     role: client
 spec:
   type: LoadBalancer
   selector:
-    component: elasticsearch
+    component: {{template "fullname" .}}
     role: client
   ports:
   - name: http
     port: 9200
     protocol: TCP
-

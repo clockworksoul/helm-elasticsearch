@@ -1,16 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: es-data
+  name: {{template "fullname" .}}-data
   labels:
-    component: elasticsearch
+    component: {{template "fullname" .}}
     role: data
 spec:
   replicas: {{ .Values.data.replicas }}
   template:
     metadata:
       labels:
-        component: elasticsearch
+        component: {{template "fullname" .}}
         role: data
       annotations:
         pod.beta.kubernetes.io/init-containers: '[

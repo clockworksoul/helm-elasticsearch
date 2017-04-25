@@ -1,16 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: es-master
+  name: {{template "fullname" .}}-master
   labels:
-    component: elasticsearch
+    component: {{template "fullname" .}}
     role: master
 spec:
   replicas: {{ .Values.master.replicas }}
   template:
     metadata:
       labels:
-        component: elasticsearch
+        component: {{template "fullname" .}}
         role: master
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
