@@ -6,11 +6,16 @@ metadata:
     component: {{template "fullname" .}}
     role: client
 spec:
-  type: LoadBalancer
+  type: {{ .Values.service.type }}
   selector:
     component: {{template "fullname" .}}
     role: client
   ports:
   - name: http
-    port: 9200
+    port: {{ .Values.service.httpPort }}
+    targetPort: 9200
+    protocol: TCP
+  - name: transport
+    port: {{ .Values.service.transportPort }}
+    targetPort: 9300
     protocol: TCP
