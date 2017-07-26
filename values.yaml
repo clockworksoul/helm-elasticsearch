@@ -59,6 +59,6 @@ master:
     NUMBER_OF_MASTERS: "2"
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   httpPort: 9200
   transportPort: 9300
