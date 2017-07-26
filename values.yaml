@@ -15,6 +15,7 @@ common:
 client:
   # It isn't common to need more than 2 client nodes.
   replicas: 2
+  antiAffinity: "soft"
   env:
     NODE_DATA: "false"
     NODE_MASTER: "false"
@@ -32,6 +33,7 @@ client:
 data:
   # This count will depend on your data and computation needs.
   replicas: 2
+  antiAffinity: "soft"
   env:
     NODE_DATA: "true"
     NODE_MASTER: "false"
@@ -46,6 +48,7 @@ data:
 master:
   # Master replica count should be (#clients / 2) + 1, and generally at least 3.
   replicas: 3
+  antiAffinity: "soft"
   env:
     NODE_DATA: "false"
     NODE_MASTER: "true"
