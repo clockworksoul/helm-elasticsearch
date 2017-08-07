@@ -29,6 +29,27 @@ spec:
           }
         ]'
     spec:
+    {{- if eq .Values.client.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  component: {{template "fullname" .}}
+                  role: client
+      {{- else if eq .Values.client.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  component: {{template "fullname" .}}
+                  role: client
+      {{- end }}
       containers:
       - name: es-client
         securityContext:
