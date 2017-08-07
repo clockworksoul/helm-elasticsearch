@@ -1,7 +1,7 @@
 apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
-  name: {{template "fullname" .}}-curator
+  name: {{ template "fullname" . }}-curator
 spec:
   schedule: {{ .Values.curator.schedule }}
   jobTemplate:
@@ -18,5 +18,5 @@ spec:
           volumes:
             - name: config-volume
               configMap:
-                name: {{template "fullname" .}}-curator-config
+                name: {{ template "fullname" . }}-curator-config
           restartPolicy: OnFailure

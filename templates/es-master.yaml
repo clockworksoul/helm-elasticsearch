@@ -1,16 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{template "fullname" .}}-master
+  name: {{ template "fullname" . }}-master
   labels:
-    component: {{template "fullname" .}}
+    component: {{ template "fullname" . }}
     role: master
 spec:
   replicas: {{ .Values.master.replicas }}
   template:
     metadata:
       labels:
-        component: {{template "fullname" .}}
+        component: {{ template "fullname" . }}
         role: master
       annotations:
         # Elasticsearch uses a hybrid mmapfs / niofs directory by default to
@@ -36,7 +36,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  component: {{template "fullname" .}}
+                  component: {{ template "fullname" . }}
                   role: master
       {{- else if eq .Values.master.antiAffinity "soft" }}
       affinity:
@@ -44,10 +44,10 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
+              topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  component: {{template "fullname" .}}
+                  component: {{ template "fullname" . }}
                   role: master
       {{- end }}
       containers:
@@ -70,7 +70,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: DISCOVERY_SERVICE
-          value: {{template "fullname" .}}-discovery
+          value: {{ template "fullname" . }}-discovery
         {{- range $key, $value :=  .Values.common.env }}
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
