@@ -6,7 +6,7 @@ common:
   env:
     CLUSTER_NAME: "myesdb"
     # Uncomment this if you get the "No up-and-running site-local (private) addresses" error
-    NETWORK_HOST: "_eth0_"
+    # NETWORK_HOST: "_eth0_"
 
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations
@@ -62,7 +62,7 @@ master:
     NUMBER_OF_MASTERS: "2"
 
 curator:
-  schedule: "54 * * * *"
+  schedule: "0 1 * * *"
   # Allows modification of the default age-based filter. If you require more
   # sophisticated filtering, modify the action file specified in
   # templates/es-curator-config.yaml.
