@@ -1,3 +1,4 @@
+{{ if .Values.curator.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -53,3 +54,4 @@ data:
       logfile:
       logformat: default
       blacklist: ['elasticsearch', 'urllib3']
+{{ end }}

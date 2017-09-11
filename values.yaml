@@ -62,6 +62,7 @@ master:
     NUMBER_OF_MASTERS: "2"
 
 curator:
+  enable: false
   schedule: "0 1 * * *"
   # Allows modification of the default age-based filter. If you require more
   # sophisticated filtering, modify the action file specified in
