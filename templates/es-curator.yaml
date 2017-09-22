@@ -1,4 +1,4 @@
-{{ if .Values.curator.enabled }}
+{{- if .Values.curator.enabled }}
 apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
@@ -21,4 +21,4 @@ spec:
               configMap:
                 name: {{ template "fullname" . }}-curator-config
           restartPolicy: OnFailure
-{{ end }}
+{{- end }}
