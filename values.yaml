@@ -1,4 +1,11 @@
 common:
+  # If you would like to use StatefulSets/StorageClasses to auto-provision
+  #   persist volumes instead of emptyDir on the local node for storage, set
+  #   this to true.
+  stateful:
+    enabled: "false"
+    pv_size_master: "1Gi"
+    pv_size_data: "16Gi"
   image:
     repository: quay.io/pires/docker-elasticsearch-kubernetes
     tag: 5.5.1

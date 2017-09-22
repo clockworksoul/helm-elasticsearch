@@ -1,11 +1,19 @@
+{{- if eq .Values.common.stateful.enabled "true" }}
+apiVersion: apps/v1beta1
+kind: StatefulSet
+{{- else }}
 apiVersion: extensions/v1beta1
 kind: Deployment
+{{- end }}
 metadata:
   name: {{ template "fullname" . }}-data
   labels:
     component: {{ template "fullname" . }}
     role: data
 spec:
+{{- if eq .Values.common.stateful.enabled "true" }}
+  serviceName: {{ template "fullname" . }}-data
+{{- end }}
   replicas: {{ .Values.data.replicas }}
   template:
     metadata:
@@ -86,7 +94,19 @@ spec:
         volumeMounts:
         - name: storage
           mountPath: /data
+{{- if ne .Values.common.stateful.enabled "true" }}
       volumes:
         - emptyDir:
             medium: ""
           name: "storage"
+{{- else }}
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: default
+      resources:
+        requests:
+          storage: {{ .Values.common.stateful.pv_size_data }}
+{{- end }}
