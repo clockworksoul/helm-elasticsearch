@@ -84,8 +84,12 @@ service:
 
 kibana:
   enabled: "true"
-  httpPort: 80
   replicas: 1
+  image:
+    repository: cfontes/kibana-xpack-less
+    tag: 5.5.0
+    pullPolicy: Always
+  httpPort: 80
   resources:
     limits:
       cpu: 1000m

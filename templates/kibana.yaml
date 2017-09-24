@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: cfontes/kibana-xpack-less:5.5.0
+        image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
+        imagePullPolicy: {{ .Values.kibana.image.pullPolicy }}
         env:
         - name: CLUSTER_NAME
           value: {{ .Values.common.env.CLUSTER_NAME }}
