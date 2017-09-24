@@ -17,7 +17,7 @@ spec:
         component: {{ template "fullname" . }}
         role: master
     spec:
-    {{- if eq .Values.master.antiAffinity "hard" }}
+      {{- if eq .Values.master.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

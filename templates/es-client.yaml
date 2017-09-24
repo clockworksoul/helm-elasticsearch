@@ -17,7 +17,7 @@ spec:
         component: {{ template "fullname" . }}
         role: client
     spec:
-    {{- if eq .Values.client.antiAffinity "hard" }}
+      {{- if eq .Values.client.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

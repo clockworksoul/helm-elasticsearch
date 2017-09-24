@@ -46,6 +46,17 @@ data:
     HTTP_ENABLE: "false"
     ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
+  # If enabled, then the data nodes will be StatefulSets with associated
+  # persistent volume claims.
+  stateful:
+    enabled: false
+
+    # This will fill quickly in production. You will want to increase it.
+    size: 12Gi
+
+    # The PVC storage class. On AWS "gp2" would be appropriate.
+    class: "standard"
+
 # The master node is responsible for lightweight cluster-wide actions such as
 # creating or deleting an index, tracking which nodes are part of the 
 # cluster, and deciding which shards to allocate to which nodes. It is 
@@ -67,7 +78,7 @@ master:
     NUMBER_OF_MASTERS: "2"
 
 curator:
-  enabled: "true"
+  enabled: true
   schedule: "0 1 * * *"
 
   # Allows modification of the default age-based filter. If you require more
@@ -83,7 +94,7 @@ service:
   transportPort: 9300
 
 kibana:
-  enabled: "true"
+  enabled: true
   replicas: 1
   image:
     repository: cfontes/kibana-xpack-less
@@ -101,3 +112,4 @@ kibana:
     XPACK_ML_ENABLED: "false"
     XPACK_REPORTING_ENABLED: "false"
     XPACK_SECURITY_ENABLED: "false"
+
