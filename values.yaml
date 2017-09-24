@@ -3,15 +3,20 @@ common:
     repository: quay.io/pires/docker-elasticsearch-kubernetes
     tag: 5.6.1
     pullPolicy: Always
+
+  # Defines the service type for all outward-facing (non-discovery) services.
+  serviceType: LoadBalancer
+
   env:
     CLUSTER_NAME: "myesdb"
-    # Uncomment this if you get the "No up-and-running site-local (private) addresses" error
+    # Uncomment this if you get the "No up-and-running site-local (private)
+    # addresses" error.
     # NETWORK_HOST: "_eth0_"
 
 # Client/ingest nodes can execute pre-processing pipelines, composed of
-# one or more ingest processors. Depending on the type of operations
-# performed by the ingest processors and the required resources, it may make
-# sense to have dedicated ingest nodes, that will only perform this specific task.
+# one or more ingest processors. Depending on the type of operations performed
+# by the ingest processors and the required resources, it may make sense to
+# have dedicated ingest nodes, that will only perform this specific task.
 client:
   # It isn't common to need more than 2 client nodes.
   replicas: 2
@@ -64,6 +69,7 @@ master:
 curator:
   enabled: "true"
   schedule: "0 1 * * *"
+
   # Allows modification of the default age-based filter. If you require more
   # sophisticated filtering, modify the action file specified in
   # templates/es-curator-config.yaml.
@@ -73,7 +79,6 @@ curator:
     unit_count: 3
 
 service:
-  type: LoadBalancer
   httpPort: 9200
   transportPort: 9300
 

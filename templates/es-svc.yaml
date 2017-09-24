@@ -6,7 +6,7 @@ metadata:
     component: {{ template "fullname" . }}
     role: client
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.common.serviceType }}
   selector:
     component: {{ template "fullname" . }}
     role: client
