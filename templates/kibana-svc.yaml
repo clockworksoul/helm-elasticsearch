@@ -4,6 +4,10 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-kibana
   labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
     component: {{ template "fullname" . }}-kibana
 spec:
   type: {{ .Values.common.serviceType }}

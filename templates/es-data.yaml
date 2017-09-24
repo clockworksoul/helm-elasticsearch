@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-data
   labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
     component: {{ template "fullname" . }}
     role: data
 spec:
@@ -12,22 +16,6 @@ spec:
       labels:
         component: {{ template "fullname" . }}
         role: data
-      annotations:
-        # Elasticsearch uses a hybrid mmapfs / niofs directory by default to
-        # store its indices. The default operating system limits on mmap counts
-        # is likely to be too low, which may result in out of memory exceptions,
-        # so we use vm.max_map_count=262144 to increase that value.
-        pod.beta.kubernetes.io/init-containers: '[
-          {
-          "name": "sysctl",
-            "image": "busybox",
-            "imagePullPolicy": "IfNotPresent",
-            "command": ["sysctl", "-w", "vm.max_map_count=262144"],
-            "securityContext": {
-              "privileged": true
-            }
-          }
-        ]'
     spec:
     {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
@@ -50,6 +38,13 @@ spec:
                   component: {{ template "fullname" . }}
                   role: data
       {{- end }}
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
       containers:
       - name: es-data
         securityContext:

@@ -3,6 +3,11 @@ apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
   name: {{ template "fullname" . }}-curator
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   schedule: {{ .Values.curator.schedule }}
   jobTemplate:

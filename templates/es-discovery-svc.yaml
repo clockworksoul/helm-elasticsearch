@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-discovery
   labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
     component: {{ template "fullname" . }}
     role: master
 spec:
