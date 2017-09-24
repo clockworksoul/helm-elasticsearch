@@ -1,0 +1,15 @@
+{{- if .Values.kibana.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-kibana
+  labels:
+    component: {{ template "fullname" . }}-kibana
+spec:
+  selector:
+    component: {{ template "fullname" . }}-kibana
+  ports:
+  - port: {{ .Values.kibana.httpPort }}
+    targetPort: 5601
+    protocol: TCP
+{{- end }}

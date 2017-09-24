@@ -77,3 +77,18 @@ service:
   httpPort: 9200
   transportPort: 9300
 
+kibana:
+  enabled: "true"
+  httpPort: 80
+  replicas: 1
+  resources:
+    limits:
+      cpu: 1000m
+    requests:
+      cpu: 100m
+  env:
+    SERVER_BASEPATH: "/api/v1/proxy/namespaces/default/services/kibana"
+    XPACK_GRAPH_ENABLED: "false"
+    XPACK_ML_ENABLED: "false"
+    XPACK_REPORTING_ENABLED: "false"
+    XPACK_SECURITY_ENABLED: "false"
