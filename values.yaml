@@ -29,11 +29,11 @@ client:
     ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
 # Data nodes hold the shards that contain the documents you have indexed. Data
-# nodes handle data related operations like CRUD, search, and aggregations. 
-# These operations are I/O-, memory-, and CPU-intensive. It is important to 
+# nodes handle data related operations like CRUD, search, and aggregations.
+# These operations are I/O-, memory-, and CPU-intensive. It is important to
 # monitor these resources and to add more data nodes if they are overloaded.
 #
-# The main benefit of having dedicated data nodes is the separation of the 
+# The main benefit of having dedicated data nodes is the separation of the
 # master and data roles.
 data:
   # This count will depend on your data and computation needs.
@@ -58,8 +58,8 @@ data:
     class: "standard"
 
 # The master node is responsible for lightweight cluster-wide actions such as
-# creating or deleting an index, tracking which nodes are part of the 
-# cluster, and deciding which shards to allocate to which nodes. It is 
+# creating or deleting an index, tracking which nodes are part of the
+# cluster, and deciding which shards to allocate to which nodes. It is
 # important for cluster health to have a stable master node.
 master:
   # Master replica count should be (#clients / 2) + 1, and generally at least 3.
@@ -107,7 +107,6 @@ kibana:
     requests:
       cpu: 100m
   env:
-    SERVER_BASEPATH: "/api/v1/proxy/namespaces/default/services/kibana"
     XPACK_GRAPH_ENABLED: "false"
     XPACK_ML_ENABLED: "false"
     XPACK_REPORTING_ENABLED: "false"

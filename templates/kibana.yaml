@@ -1,4 +1,5 @@
 {{- if .Values.kibana.enabled }}
+{{- $elasticsearchServiceName := printf "%s-%s" .Release.Name "elasticsearch" | trunc 63 -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -26,6 +27,8 @@ spec:
         env:
         - name: CLUSTER_NAME
           value: {{ .Values.common.env.CLUSTER_NAME }}
+        - name: ELASTICSEARCH_URL
+          value: http://{{ $elasticsearchServiceName }}:{{ .Values.service.httpPort }}
         {{- range $key, $value :=  .Values.kibana.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
