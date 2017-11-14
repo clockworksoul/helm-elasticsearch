@@ -1,5 +1,6 @@
 {{- if .Values.kibana.ingress.enabled -}}
 {{- $serviceName := printf "%s-kibana" (include "fullname" .) -}}
+{{- $servicePort := .Values.kibana.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -22,7 +23,7 @@ spec:
         paths:
           - backend:
               serviceName: {{ $serviceName }}
-              servicePort: {{ .Values.kibana.httpPort }}
+              servicePort: {{ $servicePort }}
     {{- end -}}
   {{- if .Values.kibana.ingress.tls }}
   tls:
