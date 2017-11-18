@@ -13,6 +13,15 @@ common:
     # addresses" error.
     # NETWORK_HOST: "_eth0_"
 
+  # If enabled, then the data and master nodes will be StatefulSets with
+  # associated persistent volume claims.
+  stateful:
+    enabled: false
+
+    # The PVC storage class that backs the persistent volume claims. On AWS
+    # "gp2" would be appropriate.
+    class: "standard"
+
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations performed
 # by the ingest processors and the required resources, it may make sense to
@@ -46,16 +55,13 @@ data:
     HTTP_ENABLE: "false"
     ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
-  # If enabled, then the data nodes will be StatefulSets with associated
-  # persistent volume claims.
+  # Determines the properties of the persistent volume claim associated with a
+  # data node StatefulSet that is created when the common.stateful.enabled
+  # attribute is true.
   stateful:
-    enabled: false
-
-    # This will fill quickly in production. You will want to increase it.
+    # This is a default value, and will not be sufficient in a production
+    # system. You'll probably want to increase it.
     size: 12Gi
-
-    # The PVC storage class. On AWS "gp2" would be appropriate.
-    class: "standard"
 
 # The master node is responsible for lightweight cluster-wide actions such as
 # creating or deleting an index, tracking which nodes are part of the 
@@ -76,6 +82,14 @@ master:
     # will need a minimum of 2 master nodes to operate. If you have 3 masters
     # and one dies, the cluster still works.
     NUMBER_OF_MASTERS: "2"
+
+  # Determines the properties of the persistent volume claim associated with a
+  # data node StatefulSet that is created when the common.stateful.enabled
+  # attribute is true.
+  stateful:
+    # This is a default value, and will not be sufficient in a production
+    # system. You'll probably want to increase it.
+    size: 2Gi
 
 curator:
   enabled: true

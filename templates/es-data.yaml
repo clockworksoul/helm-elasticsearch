@@ -1,5 +1,5 @@
-apiVersion: {{ if .Values.data.stateful.enabled }}apps/v1beta1{{ else }}extensions/v1beta1{{ end }}
-kind: {{ if .Values.data.stateful.enabled }}StatefulSet{{ else }}Deployment{{ end }}
+apiVersion: {{ if .Values.common.stateful.enabled }}apps/v1beta1{{ else }}extensions/v1beta1{{ end }}
+kind: {{ if .Values.common.stateful.enabled }}StatefulSet{{ else }}Deployment{{ end }}
 metadata:
   name: {{ template "fullname" . }}-data
   labels:
@@ -10,7 +10,7 @@ metadata:
     component: {{ template "fullname" . }}
     role: data
 spec:
-  {{- if .Values.data.stateful.enabled }}
+  {{- if .Values.common.stateful.enabled }}
   serviceName: {{ template "fullname" . }}-data
   {{- end }}
   replicas: {{ .Values.data.replicas }}
@@ -51,10 +51,10 @@ spec:
       containers:
       - name: es-data
         securityContext:
-          privileged: {{ .Values.data.stateful.enabled }}
+          privileged: {{ .Values.common.stateful.enabled }}
           capabilities:
             add:
-              {{- if .Values.data.stateful.enabled }}
+              {{- if .Values.common.stateful.enabled }}
               - IPC_LOCK
               {{- else }}
               - IPC_LOCK
@@ -93,18 +93,18 @@ spec:
         volumeMounts:
         - name: storage
           mountPath: /data
-      {{- if not .Values.data.stateful.enabled }}
+      {{- if not .Values.common.stateful.enabled }}
       volumes:
         - emptyDir:
             medium: ""
           name: "storage"
       {{- end }}
-  {{- if .Values.data.stateful.enabled }}
+  {{- if .Values.common.stateful.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: storage
       annotations:
-        volume.beta.kubernetes.io/storage-class: {{ .Values.data.stateful.class }}
+        volume.beta.kubernetes.io/storage-class: {{ .Values.common.stateful.class }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
