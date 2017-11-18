@@ -103,6 +103,13 @@ curator:
     unit: "days"
     unit_count: 3
 
+# If RBAC is enabled, a ClusterRole and ClusterRoleBinding will be created.
+rbac:
+  enabled: true
+
+  # RBAC API version (currently v1, v1beta1, v1alpha1)
+  apiVersion: "v1beta1"
+
 service:
   httpPort: 9200
   transportPort: 9300
