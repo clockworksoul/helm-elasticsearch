@@ -59,7 +59,8 @@ data:
   # data node StatefulSet that is created when the common.stateful.enabled
   # attribute is true.
   stateful:
-    # This will fill quickly in production. You will want to increase it.
+    # This is a default value, and will not be sufficient in a production
+    # system. You'll probably want to increase it.
     size: 12Gi
 
 # The master node is responsible for lightweight cluster-wide actions such as
@@ -86,8 +87,9 @@ master:
   # data node StatefulSet that is created when the common.stateful.enabled
   # attribute is true.
   stateful:
-    # This will fill quickly in production. You will want to increase it.
-    size: 8Gi
+    # This is a default value, and will not be sufficient in a production
+    # system. You'll probably want to increase it.
+    size: 2Gi
 
 curator:
   enabled: true
