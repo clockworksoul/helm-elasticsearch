@@ -1,33 +1,14 @@
-
-
-## Deploying with Helm
-
-With Helm properly installed and configured, standing up a complete cluster is almost trivial:
-
-```
-$ git clone https://github.com/clockworksoul/helm-elasticsearch.git elasticsearch
-$ helm install elasticsearch
-```
-
-## Contributing
-
-Please do! Taking pull requests.
-
-
-
-
-
 # helm-elasticsearch
 
-An Elasticsearch (5.6.1) cluster on top of Kubernetes, made easier.
+An Elasticsearch (5.6.1) cluster on top of Kubernetes, made easier with all the customizability and adaptability provided by [Helm](https://github.com/kubernetes/helm).
 
-A [Helm](https://github.com/kubernetes/helm) chart that essentially lifts-and-shifts the core manifests in the [pires/kubernetes-elasticsearch-cluster](https://github.com/pires/kubernetes-elasticsearch-cluster) project.
+At its core this chart closely tracks the [pires/kubernetes-elasticsearch-cluster](https://github.com/pires/kubernetes-elasticsearch-cluster) project (including this README!), and makes an effort to keep in line with that project. However, Helm's support for templating and conditionals allows us the to enhance those manifests to support a much broader range of possibilities.
 
 ### Table of Contents
 
-* [Important Notes](#important-notes)
-* [Pre-Requisites](#pre-requisites)
-* [Build-Images(optional)](#build-images)
+* [Important notes](#important-notes)
+* [Pre-requisites](#pre-requisites)
+* [Build images (optional)](#build-images)
 * [Test (deploying & accessing)](#test)
 * [Pod anti-affinity](#pod-anti-affinity)
 * [Deploying with Helm](#helm)
@@ -36,6 +17,7 @@ A [Helm](https://github.com/kubernetes/helm) chart that essentially lifts-and-sh
 * [Deploy Kibana](#kibana)
 * [FAQ](#faq)
 * [Troubleshooting](#troubleshooting)
+* [Contributing](#contributing)
 
 ## Abstract
 
@@ -48,25 +30,24 @@ Given this, I'm going to demonstrate how to provision a production grade scenari
 
 <a id="important-notes">
 
-## (Very) Important notes
+## (Very) important notes
 
-* Elasticsearch pods need for an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise
-the init-container will fail to run.
+* Elasticsearch pods require an init-container to run in privileged mode, so it can set some VM options. For that to happen, the `kubelet` should be running with args `--allow-privileged`, otherwise the init-container will fail to run.
 
-* By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory.
-One can change this in the deployment descriptors available in this repository.
+* By default, `ES_JAVA_OPTS` is set to `-Xms256m -Xmx256m`. This is a *very low* value but many users, i.e. `minikube` users, were having issues with pods getting killed because hosts were out of memory. One can change this in the `values.yaml` file.
 
-* As of the moment, Kubernetes pod descriptors use an `emptyDir` for storing data in each data node container. This is meant to be for the sake of simplicity and should be adapted according to one's storage needs.
+* This chart allows users to choose to deploy the cluster statefully using `StatefulSets`, which use `volumeClaimTemplates` to provision persistent storage for each pod. This function is off by default, but can be enabled by setting the `common.stateful.enabled` value to `true`.
 
-* The [stateful](stateful) directory contains an example which deploys the data pods as a `StatefulSet`. These use a `volumeClaimTemplates` to provision persistent storage for each pod.
+* Non-stateful nodes use an `emptyDir` for storing data in each node container. This is meant to be for the sake of simplicity and should be adapted according to one's storage needs.
 
 <a id="pre-requisites">
 
 ## Pre-requisites
 
 * Kubernetes cluster with **alpha features enabled** (tested with v1.7.2 on top of [Vagrant + CoreOS](https://github.com/pires/kubernetes-vagrant-coreos-cluster)), that's because curator
- is a CronJob object which comes from batch/v2alpha1, to enable it, just add
+ is a CronJob object which comes from `batch/v2alpha1`, to enable it, just add
  `--runtime-config=batch/v2alpha1=true` into your kube-apiserver options.
+
 * `kubectl` configured to access the cluster master API Server
 
 <a id="build-images">
@@ -74,6 +55,8 @@ One can change this in the deployment descriptors available in this repository.
 ## Build images (optional)
 
 Providing one's own version of [the images automatically built from this repository](https://github.com/pires/docker-elasticsearch-kubernetes) will not be supported. This is an *optional* step. One has been warned.
+
+If you do choose to go this route, however, the source repository can be set by updating the `common.image.repository` value.
 
 ## Test
 
@@ -148,7 +131,9 @@ As we can assert, the cluster is up and running. Easy, wasn't it?
 
 ### Access the service
 
-*Don't forget* that services in Kubernetes are only acessible from containers in the cluster. For different behavior one should [configure the creation of an external load-balancer](http://kubernetes.io/v1.1/docs/user-guide/services.html#type-loadbalancer). While it's supported within this example service descriptor, its usage is out of scope of this document, for now.
+*Don't forget* that services in Kubernetes are only accessible from containers in the cluster. For different behavior one should [configure the creation of an external load-balancer](http://kubernetes.io/v1.1/docs/user-guide/services.html#type-loadbalancer). While it's supported within this example service descriptor, its usage is out of scope of this document, for now.
+
+***Note: if you have the time and motivation to add optional support for external load-balancer service types, please feel free to submit a PR!***
 
 ```
 $ kubectl get svc elasticsearch
@@ -211,50 +196,21 @@ One should see something similar to the following:
 
 ## Pod anti-affinity
 
-One of the main advantages of running Elasticsearch on top of Kubernetes is how resilient the cluster becomes, particularly during
-node restarts. However if all data pods are scheduled onto the same node(s), this advantage decreases significantly and may even
-result in no data pods being available.
-
-It is then **highly recommended**, in the context of the solution described in this repository, that one adopts [pod anti-affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature)
+One of the main advantages of running Elasticsearch on top of Kubernetes is how resilient the cluster becomes, particularly during node restarts. However if all data pods are scheduled onto the same node(s), this advantage decreases significantly and may even result in no data pods being available. For this reason the pods support [pod anti-affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature)
 in order to guarantee that two data pods will never run on the same node.
 
-Here's an example:
-```yaml
-spec:
-  affinity:
-    podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: role
-              operator: In
-              values:
-              - data
-          topologyKey: kubernetes.io/hostname
-  containers:
-  - (...)
-```
+You may set this behavior to be either "soft" (default) or "hard" by modifying the `antiAffinity` values. "Hard" anti-affinity forces all pods to run on seperate nodes, and if this requirement cannot be satisfied then the nodes will not be scheduled. "Soft" anti-affinity indicates a preference, so if the scheduler can’t satisfy it the pod will still be scheduled.
+
+Anti-affinity behaviot may be set independently for client, data, and master nodes. Setting any value besides "hard" or "soft" will turn anti-affinity off.
 
 <a id="helm">
-
-## PodDisruptionBudget
-
-If one wants to ensure that no more than `n` Elasticsearch nodes will be unavailable at a time, one can optionally (change and) apply the following manifests:
-```
-kubectl create -f es-master-pdb.yaml
-kubectl create -f es-data-pdb.yaml
-```
-
-**Note:** This is an advanced subject and one should only put it in practice if one understands clearly what it means both in the Kubernetes and Elasticsearch contexts.
 
 ## Deploying with Helm
 
 [Helm](https://github.com/kubernetes/helm) charts for a basic (non-stateful) ElasticSearch deployment are maintained at https://github.com/clockworksoul/helm-elasticsearch. With Helm properly installed and configured, standing up a complete cluster is almost trivial:
 
 ```
-$ git clone https://github.com/clockworksoul/helm-elasticsearch.git
+$ git clone https://github.com/clockworksoul/helm-elasticsearch.git elasticsearch
 $ helm install helm-elasticsearch
 ```
 
@@ -274,14 +230,9 @@ The image used in this repo is very minimalist. However, one can install additio
 
 ## Clean up with Curator
 
-Additionally, one can run a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) that will periodically run [Curator](https://github.com/elastic/curator) to clean up indices (or do other actions on the Elasticsearch cluster).
+By default, a [CronJob](http://kubernetes.io/docs/user-guide/cron-jobs/) is installed that will periodically run [Curator](https://github.com/elastic/curator) to clean up indices (or do other actions on the Elasticsearch cluster). This may be disabled by changing the value of `curater.enabled` to `false`.
 
-```
-kubectl create -f es-curator-config.yaml
-kubectl create -f es-curator.yaml
-```
-
-Please, confirm the job has been created.
+You can determine whether the job has been created as follows:
 
 ```
 $ kubectl get cronjobs
@@ -289,22 +240,11 @@ NAME      SCHEDULE    SUSPEND   ACTIVE    LAST-SCHEDULE
 curator   1 0 * * *   False     0         <none>
 ```
 
-The job is configured to run once a day at _1 minute past midnight and delete indices that are older than 3 days_.
+The default Curator behavior will:
+* Run once a day at _1 minute past midnight_, modifiable via the `curator.schedule` value.
+* Delete indices that are _older than 3 days_, modifiable via the `curator.age` values.
 
-**Notes**
-
-- One can change the schedule by editing the cron notation in `es-curator.yaml`.
-- One can change the action (e.g. delete older than 3 days) by editing the `es-curator-config.yaml`.
-- The definition of the `action_file.yaml` is quite self-explaining for simple set-ups. For more advanced configuration options, please consult the [Curator Documentation](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html).
-
-If one wants to remove the curator job, just run:
-
-```
-kubectl delete cronjob curator
-kubectl delete configmap curator-config
-```
-
-Various parameters of the cluster, including replica count and memory allocations, can be adjusted by editing the `helm-elasticsearch/values.yaml` file. For information about Helm, please consult the [complete Helm documentation](https://github.com/kubernetes/helm/blob/master/docs/index.md).
+More sophisticated filtering is possible but requires modification of the action file specified in `templates/es-curator-config.yaml`. The definition of the `action_file.yaml` is quite self-explainatory for simple set-ups. For more advanced configuration options, please consult the [Curator Documentation](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html).
 
 <a id="kibana">
 
@@ -337,6 +277,8 @@ https://<API_SERVER_URL>/api/v1/proxy/namespaces/default/services/kibana/proxy
 One can also create an Ingress to expose the service publicly or simly use the service nodeport.
 In the case one proceeds to do so, one must change the environment variable `SERVER_BASEPATH` to the match their environment.
 
+<a id="faq">
+
 ## FAQ
 
 ### Why does `NUMBER_OF_MASTERS` differ from number of master-replicas?
@@ -345,6 +287,8 @@ The default value for this environment variable is 2, meaning a cluster will nee
 
 ### How can I customize `elasticsearch.yaml`?
 Read a different config file by settings env var `path.conf=/path/to/my/config/`. Another option would be to build one's own image from  [this repository](https://github.com/pires/docker-elasticsearch-kubernetes)
+
+<a id="troubleshooting">
 
 ## Troubleshooting
 
@@ -401,3 +345,9 @@ In order to workaround this, set `NETWORK_HOST` environment variable in the pod 
 - name: "NETWORK_HOST"
   value: "_eth0:ipv4_" #_p1p1:ipv4_ if interface name is p1p1, _ens4:ipv4_ if interface name is ens4, and so on.
 ```
+
+<a id="contributing">
+
+## Contributing
+
+One of our goals is to allow to create a product that is both highly customizable and highly reliable, so actively accepting pull requests that add to those qualities. As the expression goes: "many hands make light work".
