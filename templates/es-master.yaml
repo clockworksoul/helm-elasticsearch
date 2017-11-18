@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: {{ if .Values.common.stateful.enabled }}apps/v1beta1{{ else }}extensions/v1beta1{{ end }}
+kind: {{ if .Values.common.stateful.enabled }}StatefulSet{{ else }}Deployment{{ end }}
 metadata:
   name: {{ template "fullname" . }}-master
   labels:
@@ -10,6 +10,9 @@ metadata:
     component: {{ template "fullname" . }}
     role: master
 spec:
+  {{- if .Values.common.stateful.enabled }}
+  serviceName: {{ template "fullname" . }}-master
+  {{- end }}
   replicas: {{ .Values.master.replicas }}
   template:
     metadata:
@@ -48,11 +51,15 @@ spec:
       containers:
       - name: es-master
         securityContext:
-          privileged: false
+          privileged: {{ .Values.common.stateful.enabled }}
           capabilities:
             add:
+              {{- if .Values.common.stateful.enabled }}
+              - IPC_LOCK
+              {{- else }}
               - IPC_LOCK
               - SYS_RESOURCE
+              {{- end }}
         image: "{{ .Values.common.image.repository }}:{{ .Values.common.image.tag }}"
         imagePullPolicy: {{ .Values.common.image.pullPolicy }}
         env:
@@ -84,7 +91,21 @@ spec:
         volumeMounts:
         - name: storage
           mountPath: /data
+      {{- if not .Values.common.stateful.enabled }}
       volumes:
         - emptyDir:
             medium: ""
           name: "storage"
+      {{- end }}
+  {{- if .Values.common.stateful.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+      annotations:
+        volume.beta.kubernetes.io/storage-class: {{ .Values.common.stateful.class }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.master.stateful.size }}
+  {{- end }}
