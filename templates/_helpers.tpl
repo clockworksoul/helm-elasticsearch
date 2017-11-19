@@ -25,3 +25,16 @@ Return the appropriate apiVersion for Curactor cron job.
 "batch/v2alpha1"
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for RBAC.
+*/}}
+{{- define "rbac.apiVersion" -}}
+{{- if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1" -}}
+"rbac.authorization.k8s.io/v1"
+{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1beta1" -}}
+"rbac.authorization.k8s.io/v1beta1"
+{{- else if .Capabilities.APIVersions.Has "rbac.authorization.k8s.io/v1alpha1" -}}
+"rbac.authorization.k8s.io/v1alpha1"
+{{- end -}}
+{{- end -}}
