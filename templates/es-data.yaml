@@ -41,6 +41,9 @@ spec:
                   component: {{ template "fullname" . }}
                   role: data
       {{- end }}
+      {{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- end }}
       initContainers:
       - name: init-sysctl
         image: busybox
