@@ -1,5 +1,7 @@
 # helm-elasticsearch
 
+[![Build Status](https://img.shields.io/travis/clockworksoul/helm-elasticsearch.svg?style=flat-square)](https://travis-ci.org/clockworksoul/helm-elasticsearch)
+
 An Elasticsearch cluster on top of Kubernetes, made easier.
 
 A [Helm](https://github.com/kubernetes/helm) chart that essentially lifts-and-shifts the core manifests in the [pires/kubernetes-elasticsearch-cluster](https://github.com/pires/kubernetes-elasticsearch-cluster) project.

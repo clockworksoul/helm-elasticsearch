@@ -1,0 +1,20 @@
+language: generic
+
+sudo: false
+
+env:
+    global:
+        - HELM_VERSION=2.7.2
+
+install:
+    - wget https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz
+    - tar xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz --strip 1 linux-amd64/helm
+    - ./helm init --client-only
+
+# The directory name must match the chart name
+before_script:
+    - export TRAVIS_BASE_BUILD_DIR=$(dirname $TRAVIS_BUILD_DIR)
+    - ln -s $TRAVIS_BUILD_DIR $TRAVIS_BASE_BUILD_DIR/elasticsearch
+    - cd $TRAVIS_BASE_BUILD_DIR/elasticsearch
+
+script: ./helm lint
