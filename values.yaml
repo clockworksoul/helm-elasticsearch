@@ -9,6 +9,7 @@ common:
 
   env:
     CLUSTER_NAME: "myesdb"
+
     # Uncomment this if you get the "No up-and-running site-local (private)
     # addresses" error.
     # NETWORK_HOST: "_eth0_"
@@ -30,12 +31,17 @@ client:
   # It isn't common to need more than 2 client nodes.
   replicas: 2
   antiAffinity: "soft"
+
+  requests:
+    # Specifies the memory requested for the JVM heap.
+    # Requires a decimal unit (M = 1000^2 bytes, G = 1000^3 bytes).
+    memory: 256M
+
   env:
     NODE_DATA: "false"
     NODE_MASTER: "false"
     NODE_INGEST: "true"
     HTTP_ENABLE: "true"
-    ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
 # Data nodes hold the shards that contain the documents you have indexed. Data
 # nodes handle data related operations like CRUD, search, and aggregations. 
@@ -48,12 +54,17 @@ data:
   # This count will depend on your data and computation needs.
   replicas: 2
   antiAffinity: "soft"
+
+  requests:
+    # Specifies the memory requested for the JVM heap.
+    # Requires a decimal unit (M = 1000^2 bytes, G = 1000^3 bytes).
+    memory: 256M
+
   env:
     NODE_DATA: "true"
     NODE_MASTER: "false"
     NODE_INGEST: "false"
     HTTP_ENABLE: "false"
-    ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
   # Determines the properties of the persistent volume claim associated with a
   # data node StatefulSet that is created when the common.stateful.enabled
@@ -71,12 +82,17 @@ master:
   # Master replica count should be (#clients / 2) + 1, and generally at least 3.
   replicas: 3
   antiAffinity: "soft"
+
+  requests:
+    # Specifies the memory requested for the JVM heap.
+    # Requires a decimal unit (M = 1000^2 bytes, G = 1000^3 bytes).
+    memory: 256M
+
   env:
     NODE_DATA: "false"
     NODE_MASTER: "true"
     NODE_INGEST: "false"
     HTTP_ENABLE: "false"
-    ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
     # The default value for this environment variable is 2, meaning a cluster
     # will need a minimum of 2 master nodes to operate. If you have 3 masters

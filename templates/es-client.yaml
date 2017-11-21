@@ -66,6 +66,8 @@ spec:
               fieldPath: metadata.name
         - name: DISCOVERY_SERVICE
           value: {{ template "fullname" . }}-discovery
+        - name: ES_JAVA_OPTS
+          value: "-Xms{{ .Values.client.requests.memory | default "256m" | lower }} -Xmx{{ .Values.client.requests.memory | default "256m" | lower }}"
         {{- range $key, $value :=  .Values.common.env }}
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
@@ -74,6 +76,9 @@ spec:
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
         {{- end }}
+        resources:
+          requests:
+            memory: {{ .Values.client.requests.memory | default "256m" | upper }}
         ports:
         - containerPort: 9200
           name: http
