@@ -74,7 +74,7 @@ spec:
         - name: DISCOVERY_SERVICE
           value: {{ template "fullname" . }}-discovery
         - name: ES_JAVA_OPTS
-          value: "-Xms{{ .Values.data.requests.memory | default "256m" | lower }} -Xmx{{ .Values.data.requests.memory | default "256m" | lower }}"
+          value: "-Xms{{ .Values.data.heapMemory }} -Xmx{{ .Values.data.heapMemory }}"
         {{- range $key, $value :=  .Values.common.env }}
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
@@ -84,8 +84,7 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         resources:
-          requests:
-            memory: {{ .Values.data.requests.memory | default "256m" | upper }}
+{{ toYaml .Values.data.resources | indent 10 }}
         ports:
         - containerPort: 9300
           name: transport

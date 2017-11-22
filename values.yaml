@@ -32,10 +32,14 @@ client:
   replicas: 2
   antiAffinity: "soft"
 
-  requests:
-    # Specifies the memory requested for the JVM heap.
-    # Requires a decimal unit (M = 1000^2 bytes, G = 1000^3 bytes).
-    memory: 256M
+  # The amount of RAM allocated to the JVM heap. This should be set to the
+  # same value as resources.requests.memory, or you may see OutOfMemoryErrors
+  # on startup.
+  heapMemory: 256m
+
+  resources:
+    requests:
+      memory: 256Mi
 
   env:
     NODE_DATA: "false"
@@ -55,10 +59,14 @@ data:
   replicas: 2
   antiAffinity: "soft"
 
-  requests:
-    # Specifies the memory requested for the JVM heap.
-    # Requires a decimal unit (M = 1000^2 bytes, G = 1000^3 bytes).
-    memory: 256M
+  # The amount of RAM allocated to the JVM heap. This should be set to the
+  # same value as resources.requests.memory, or you may see OutOfMemoryErrors
+  # on startup.
+  heapMemory: 256m
+
+  resources:
+    requests:
+      memory: 256Mi
 
   env:
     NODE_DATA: "true"
@@ -83,10 +91,14 @@ master:
   replicas: 3
   antiAffinity: "soft"
 
-  requests:
-    # Specifies the memory requested for the JVM heap.
-    # Requires a decimal unit (M = 1000^2 bytes, G = 1000^3 bytes).
-    memory: 256M
+  # The amount of RAM allocated to the JVM heap. This should be set to the
+  # same value as resources.requests.memory, or you may see OutOfMemoryErrors
+  # on startup.
+  heapMemory: 256m
+
+  resources:
+    requests:
+      memory: 256Mi
 
   env:
     NODE_DATA: "false"
