@@ -73,6 +73,8 @@ spec:
               fieldPath: metadata.name
         - name: DISCOVERY_SERVICE
           value: {{ template "fullname" . }}-discovery
+        - name: ES_JAVA_OPTS
+          value: "-Xms{{ .Values.master.heapMemory }} -Xmx{{ .Values.master.heapMemory }}"
         {{- range $key, $value :=  .Values.common.env }}
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
@@ -81,6 +83,8 @@ spec:
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
         {{- end }}
+        resources:
+{{ toYaml .Values.master.resources | indent 10 }}
         ports:
         - containerPort: 9300
           name: transport
