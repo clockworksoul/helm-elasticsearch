@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-client
@@ -40,8 +40,8 @@ spec:
       {{- end }}
       initContainers:
       - name: init-sysctl
-        image: busybox
-        imagePullPolicy: IfNotPresent
+        image: "{{ .Values.image.init.repository }}:{{ .Values.image.init.tag }}"
+        imagePullPolicy: {{ .Values.image.init.pullPolicy }}
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
@@ -53,8 +53,8 @@ spec:
             add:
               - IPC_LOCK
               - SYS_RESOURCE
-        image: "{{ .Values.common.image.repository }}:{{ .Values.common.image.tag }}"
-        imagePullPolicy: {{ .Values.common.image.pullPolicy }}
+        image: "{{ .Values.image.es.repository }}:{{ .Values.image.es.tag }}"
+        imagePullPolicy: {{ .Values.image.es.pullPolicy }}
         env:
         - name: NAMESPACE
           valueFrom:
@@ -66,8 +66,6 @@ spec:
               fieldPath: metadata.name
         - name: DISCOVERY_SERVICE
           value: {{ template "fullname" . }}-discovery
-        - name: ES_JAVA_OPTS
-          value: "-Xms{{ .Values.client.heapMemory }} -Xmx{{ .Values.client.heapMemory }}"
         {{- range $key, $value :=  .Values.common.env }}
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
@@ -76,6 +74,8 @@ spec:
         - name: {{ $key | upper | replace "-" "_" }}
           value: {{ $value | quote }}
         {{- end }}
+        - name: "ES_JAVA_OPTS"
+          value: "-Xms{{ .Values.client.heapMemory }} -Xmx{{ .Values.client.heapMemory }}"
         resources:
 {{ toYaml .Values.client.resources | indent 10 }}
         ports:
@@ -98,6 +98,6 @@ spec:
         - name: storage
           mountPath: /data
       volumes:
-        - emptyDir:
-            medium: ""
-          name: "storage"
+          - emptyDir:
+              medium: ""
+            name: "storage"

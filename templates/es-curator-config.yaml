@@ -53,7 +53,6 @@ data:
       http_auth:
       timeout: 30
       master_only: False
-
     logging:
       loglevel: INFO
       logfile:

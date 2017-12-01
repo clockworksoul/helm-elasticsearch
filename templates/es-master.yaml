@@ -43,8 +43,8 @@ spec:
       {{- end }}
       initContainers:
       - name: init-sysctl
-        image: busybox
-        imagePullPolicy: IfNotPresent
+        image: "{{ .Values.image.init.repository }}:{{ .Values.image.init.tag }}"
+        imagePullPolicy: {{ .Values.image.init.pullPolicy }}
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
@@ -60,8 +60,8 @@ spec:
               - IPC_LOCK
               - SYS_RESOURCE
               {{- end }}
-        image: "{{ .Values.common.image.repository }}:{{ .Values.common.image.tag }}"
-        imagePullPolicy: {{ .Values.common.image.pullPolicy }}
+        image: "{{ .Values.image.es.repository }}:{{ .Values.image.es.tag }}"
+        imagePullPolicy: {{ .Values.image.es.pullPolicy }}
         env:
         - name: NAMESPACE
           valueFrom:
