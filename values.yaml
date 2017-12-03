@@ -1,10 +1,20 @@
-common:
-  image:
+image:
+  es:
     repository: quay.io/pires/docker-elasticsearch-kubernetes
-    tag: 5.6.1
+    tag: 6.0.0
     pullPolicy: Always
+  init:
+    repository: busybox
+    tag: latest
+    pullPolicy: IfNotPresent
+  curator:
+    repository: bobrik/curator
+    tag: latest
+    pullPolicy: IfNotPresent
 
+common:
   # Defines the service type for all outward-facing (non-discovery) services.
+  # For minikube use NodePort otherwise use LoadBalancer
   serviceType: LoadBalancer
 
   env:
@@ -26,7 +36,7 @@ common:
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations performed
 # by the ingest processors and the required resources, it may make sense to
-# have dedicated ingest nodes, that will only perform this specific task.
+# have dedicated ingest nodes, that will only perform this specific task.  
 client:
   # It isn't common to need more than 2 client nodes.
   replicas: 2
@@ -90,7 +100,7 @@ master:
   # Master replica count should be (#clients / 2) + 1, and generally at least 3.
   replicas: 3
   antiAffinity: "soft"
-
+  
   # The amount of RAM allocated to the JVM heap. This should be set to the
   # same value as master.resources.requests.memory, or you may see
   # OutOfMemoryErrors on startup.
@@ -105,7 +115,7 @@ master:
     NODE_MASTER: "true"
     NODE_INGEST: "false"
     HTTP_ENABLE: "false"
-
+    
     # The default value for this environment variable is 2, meaning a cluster
     # will need a minimum of 2 master nodes to operate. If you have 3 masters
     # and one dies, the cluster still works.
@@ -117,7 +127,7 @@ master:
   stateful:
     # This is a default value, and will not be sufficient in a production
     # system. You'll probably want to increase it.
-    size: 2Gi
+    size: 2Gi  
 
 curator:
   enabled: true
@@ -139,8 +149,8 @@ kibana:
   enabled: true
   replicas: 1
   image:
-    repository: cfontes/kibana-xpack-less
-    tag: 5.5.0
+    repository: docker.elastic.co/kibana/kibana-oss
+    tag: 6.0.0
     pullPolicy: Always
   httpPort: 80
   resources:
@@ -149,10 +159,10 @@ kibana:
     requests:
       cpu: 100m
   env:
-    XPACK_GRAPH_ENABLED: "false"
-    XPACK_ML_ENABLED: "false"
-    XPACK_REPORTING_ENABLED: "false"
-    XPACK_SECURITY_ENABLED: "false"
+    # XPACK_GRAPH_ENABLED: "false"
+    # XPACK_ML_ENABLED: "false"
+    # XPACK_REPORTING_ENABLED: "false"
+    # XPACK_SECURITY_ENABLED: "false"
   ingress:
     enabled: false
     # Used to create an Ingress record.
@@ -166,3 +176,4 @@ kibana:
       # - secretName: kibana-tls
       #   hosts:
       #     - kibana.local
+      
