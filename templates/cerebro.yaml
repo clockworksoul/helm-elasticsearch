@@ -1,0 +1,43 @@
+{{- if .Values.cerebro.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-cerebro
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ template "fullname" . }}-cerebro
+spec:
+  replicas: {{ .Values.cerebro.replicas }}
+  selector:
+    matchLabels:
+     component: {{ template "fullname" . }}-cerebro
+  template:
+    metadata:
+      labels:
+        component: {{ template "fullname" . }}-cerebro
+    spec:
+      containers:
+      - name: cerebro
+        image: "{{ .Values.cerebro.image.repository }}:{{ .Values.cerebro.image.tag }}"
+        imagePullPolicy: {{ .Values.cerebro.image.pullPolicy }}
+        env:
+        - name: CLUSTER_NAME
+          value: {{ .Values.common.env.CLUSTER_NAME }}
+        {{- range $key, $value :=  .Values.cerebro.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.cerebro.resources | indent 12 }}
+        command:
+          - /opt/cerebro/bin/cerebro
+        args:
+          - -Dhosts.0.host=http://{{ template "fullname" . }}:{{ .Values.service.httpPort }}
+        ports:
+        - containerPort: 9000
+          name: cerebro
+          protocol: TCP
+{{- end }}
