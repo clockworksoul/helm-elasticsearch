@@ -1,0 +1,20 @@
+{{- if .Values.cerebro.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-cerebro
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: {{ template "fullname" . }}-cerebro
+spec:
+  type: {{ .Values.common.serviceType }}
+  ports:
+  - port: {{ .Values.cerebro.httpPort }}
+    targetPort: 9000
+    protocol: TCP
+  selector:
+    component: {{ template "fullname" . }}-cerebro
+{{- end }}
