@@ -36,7 +36,7 @@ common:
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations performed
 # by the ingest processors and the required resources, it may make sense to
-# have dedicated ingest nodes, that will only perform this specific task.  
+# have dedicated ingest nodes, that will only perform this specific task.
 client:
   # It isn't common to need more than 2 client nodes.
   replicas: 2
@@ -57,12 +57,15 @@ client:
     NODE_INGEST: "true"
     HTTP_ENABLE: "true"
 
+  # command: ["/bin/sh","-c"]
+  # args: ["ln -sf /mnt/cfgmap/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml && bin/elasticsearch -Enode.ingest=true"]
+
 # Data nodes hold the shards that contain the documents you have indexed. Data
-# nodes handle data related operations like CRUD, search, and aggregations. 
-# These operations are I/O-, memory-, and CPU-intensive. It is important to 
+# nodes handle data related operations like CRUD, search, and aggregations.
+# These operations are I/O-, memory-, and CPU-intensive. It is important to
 # monitor these resources and to add more data nodes if they are overloaded.
 #
-# The main benefit of having dedicated data nodes is the separation of the 
+# The main benefit of having dedicated data nodes is the separation of the
 # master and data roles.
 data:
   # This count will depend on your data and computation needs.
@@ -77,6 +80,9 @@ data:
   resources:
     requests:
       memory: 256Mi
+
+  # command: ["/bin/sh","-c"]
+  # args: ["ln -sf /mnt/cfgmap/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml && bin/elasticsearch -Enode.data=true"]
 
   env:
     NODE_DATA: "true"
@@ -93,14 +99,14 @@ data:
     size: 12Gi
 
 # The master node is responsible for lightweight cluster-wide actions such as
-# creating or deleting an index, tracking which nodes are part of the 
-# cluster, and deciding which shards to allocate to which nodes. It is 
+# creating or deleting an index, tracking which nodes are part of the
+# cluster, and deciding which shards to allocate to which nodes. It is
 # important for cluster health to have a stable master node.
 master:
   # Master replica count should be (#clients / 2) + 1, and generally at least 3.
   replicas: 3
   antiAffinity: "soft"
-  
+
   # The amount of RAM allocated to the JVM heap. This should be set to the
   # same value as master.resources.requests.memory, or you may see
   # OutOfMemoryErrors on startup.
@@ -110,12 +116,15 @@ master:
     requests:
       memory: 256Mi
 
+  # command: ["/bin/sh","-c"]
+  # args: ["ln -sf /mnt/cfgmap/elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml && bin/elasticsearch -Enode.master=true"]
+
   env:
     NODE_DATA: "false"
     NODE_MASTER: "true"
     NODE_INGEST: "false"
     HTTP_ENABLE: "false"
-    
+
     # The default value for this environment variable is 2, meaning a cluster
     # will need a minimum of 2 master nodes to operate. If you have 3 masters
     # and one dies, the cluster still works.
@@ -127,7 +136,7 @@ master:
   stateful:
     # This is a default value, and will not be sufficient in a production
     # system. You'll probably want to increase it.
-    size: 2Gi  
+    size: 2Gi
 
 curator:
   enabled: true
@@ -176,4 +185,3 @@ kibana:
       # - secretName: kibana-tls
       #   hosts:
       #     - kibana.local
-      
