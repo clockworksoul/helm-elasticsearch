@@ -55,6 +55,18 @@ spec:
               - SYS_RESOURCE
         image: "{{ .Values.image.es.repository }}:{{ .Values.image.es.tag }}"
         imagePullPolicy: {{ .Values.image.es.pullPolicy }}
+        {{- if .Values.client.command }}
+        command:
+          {{- range .Values.client.command }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.client.args }}
+        args:
+          {{- range .Values.client.args }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- end }}
         env:
         - name: NAMESPACE
           valueFrom:

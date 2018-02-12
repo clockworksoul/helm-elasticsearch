@@ -62,6 +62,18 @@ spec:
               {{- end }}
         image: "{{ .Values.image.es.repository }}:{{ .Values.image.es.tag }}"
         imagePullPolicy: {{ .Values.image.es.pullPolicy }}
+        {{- if .Values.master.command }}
+        command:
+          {{- range .Values.master.command }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.master.args }}
+        args:
+          {{- range .Values.master.args }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- end }}
         env:
         - name: NAMESPACE
           valueFrom:
