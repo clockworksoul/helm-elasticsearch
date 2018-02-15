@@ -1,4 +1,4 @@
-apiVersion: {{ if .Values.common.stateful.enabled }}apps/v1beta1{{ else }}extensions/v1beta1{{ end }}
+apiVersion: {{ if .Values.common.stateful.enabled }}apps/v1beta2{{ else }}extensions/v1beta1{{ end }}
 kind: {{ if .Values.common.stateful.enabled }}StatefulSet{{ else }}Deployment{{ end }}
 metadata:
   name: {{ template "fullname" . }}-master
