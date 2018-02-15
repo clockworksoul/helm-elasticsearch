@@ -14,6 +14,10 @@ spec:
   serviceName: {{ template "fullname" . }}-master
   {{- end }}
   replicas: {{ .Values.master.replicas }}
+  selector:
+    matchLabels:
+      component: {{ template "fullname" . }}
+      role: master
   template:
     metadata:
       labels:
