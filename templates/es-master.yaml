@@ -106,6 +106,9 @@ spec:
   - metadata:
       name: storage
       annotations:
+        {{- if .Values.common.stateful.gid }}
+        pv.beta.kubernetes.io/gid: {{ .Values.common.stateful.gid }}
+        {{- end }}
         volume.beta.kubernetes.io/storage-class: {{ .Values.common.stateful.class }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
