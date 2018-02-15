@@ -96,7 +96,7 @@ spec:
           timeoutSeconds: 5
         volumeMounts:
         - name: storage
-          mountPath: /data
+          mountPath: {{- .Values.common.stateful.data_dir }}
       volumes:
           - emptyDir:
               medium: ""

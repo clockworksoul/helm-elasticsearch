@@ -94,7 +94,7 @@ spec:
             port: 9300
         volumeMounts:
         - name: storage
-          mountPath: /data
+          mountPath: {{- .Values.common.stateful.data_dir }}
       {{- if not .Values.common.stateful.enabled }}
       volumes:
         - emptyDir:

@@ -33,6 +33,9 @@ common:
     # "gp2" would be appropriate.
     class: "standard"
 
+    # Data dir location
+    data_dir: "/data"
+
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations performed
 # by the ingest processors and the required resources, it may make sense to
