@@ -15,9 +15,8 @@ data:
     node.data: ${NODE_DATA}
     node.ingest: ${NODE_INGEST}
     node.name: ${NODE_NAME}
-    max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES:1}
+    node.max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES:1}
     cluster.name: ${CLUSTER_NAME}
-    processors: ${PROCESSORS:1}
     network.host: ${NETWORK_HOST:_site_,_local_}
     path.data: /data/data
     path.logs: /data/log
