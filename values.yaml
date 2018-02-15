@@ -19,6 +19,11 @@ common:
 
   env:
     CLUSTER_NAME: "myesdb"
+    XPACK_SECURITY: false
+    XPACK_ML: false
+    XPACK_GRAPH: false
+    XPACK_WATCHER: false
+    XPACK_MONITORING: false
 
     # Uncomment this if you get the "No up-and-running site-local (private)
     # addresses" error.
@@ -32,6 +37,12 @@ common:
     # The PVC storage class that backs the persistent volume claims. On AWS
     # "gp2" would be appropriate.
     class: "standard"
+
+# Create custom config file
+# You will need to tweak `command` & `args` to use it instead of default file
+# WARNING: this can broke install/upgrade so use only if you know what are you doing
+configmap:
+  enabled: false
 
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations performed
