@@ -18,7 +18,7 @@ data:
     max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES:1}
     cluster.name: ${CLUSTER_NAME}
     processors: ${PROCESSORS:1}
-    network.host: ${NETWORK_HOST}
+    network.host: ${NETWORK_HOST:_site_,_local_}
     path.data: /data/data
     path.logs: /data/log
     bootstrap.memory_lock: ${MEMORY_LOCK:false}
