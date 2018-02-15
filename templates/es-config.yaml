@@ -27,7 +27,7 @@ data:
     http.enabled: ${HTTP_ENABLE}
     http.compression: true
     http.cors.enabled: ${HTTP_CORS_ENABLE:false}
-    http.cors.allow-origin: ${HTTP_CORS_ALLOW_ORIGIN}
+    http.cors.allow-origin: ${HTTP_CORS_ALLOW_ORIGIN:""}
     xpack.security.enabled: ${XPACK_SECURITY:false}
     xpack.ml.enabled: ${XPACK_ML:false}
     xpack.graph.enabled: ${XPACK_GRAPH:false}
