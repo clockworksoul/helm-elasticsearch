@@ -34,7 +34,7 @@ common:
     class: "standard"
 
     # Data dir location
-    data_dir: "/data"
+    dataDir: "/data"
 
 # Client/ingest nodes can execute pre-processing pipelines, composed of
 # one or more ingest processors. Depending on the type of operations performed
