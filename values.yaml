@@ -70,7 +70,7 @@ data:
   antiAffinity: "soft"
 
   # The amount of RAM allocated to the JVM heap. This should be set to the
-  # same value as data.esources.requests.memory, or you may see
+  # same value as data.resources.requests.memory, or you may see
   # OutOfMemoryErrors on startup.
   heapMemory: 256m
 
