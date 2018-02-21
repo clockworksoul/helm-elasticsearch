@@ -11,6 +11,10 @@ image:
     repository: bobrik/curator
     tag: latest
     pullPolicy: IfNotPresent
+  fluentd:
+    repository: fluent/fluentd-kubernetes-daemonset
+    tag: v0.12-debian-elasticsearch
+    pullPolicy: IfNotPresent
 
 common:
   # Defines the service type for all outward-facing (non-discovery) services.
@@ -142,6 +146,7 @@ curator:
     unit_count: 3
 
 service:
+  httpScheme: "http"
   httpPort: 9200
   transportPort: 9300
 
@@ -176,4 +181,17 @@ kibana:
       # - secretName: kibana-tls
       #   hosts:
       #     - kibana.local
-      
+
+fluentd:
+  enabled: true
+  namespace: "kube-system"
+  resources:
+    limits:
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 200Mi
+  env:
+    # X-Pack Authentication
+    # FLUENT_ELASTICSEARCH_USER: "elastic"
+    # FLUENT_ELASTICSEARCH_PASSWORD: "changeme"
