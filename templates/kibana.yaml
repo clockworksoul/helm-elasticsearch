@@ -20,6 +20,15 @@ spec:
       labels:
         component: {{ template "fullname" . }}-kibana
     spec:
+    {{- if .Values.kibana.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.kibana.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.kibana.tolerations }}
+      tolerations:
+{{ toYaml .Values.kibana.tolerations | indent 8 }}
+    {{- end }}
+
       containers:
       - name: kibana
         image: "{{ .Values.kibana.image.repository }}:{{ .Values.kibana.image.tag }}"
