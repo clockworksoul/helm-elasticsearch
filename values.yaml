@@ -57,7 +57,7 @@ client:
     NODE_INGEST: "true"
     HTTP_ENABLE: "true"
 
-  ## Node tolerations for alertmanager scheduling to nodes with taints
+  ## Node tolerations for client scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
@@ -66,7 +66,7 @@ client:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-  ## Node labels for alertmanager pod assignment
+  ## Node labels for client pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
@@ -106,7 +106,7 @@ data:
     # system. You'll probably want to increase it.
     size: 12Gi
 
-  ## Node tolerations for alertmanager scheduling to nodes with taints
+  ## Node tolerations for data scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
@@ -115,7 +115,7 @@ data:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-  ## Node labels for alertmanager pod assignment
+  ## Node labels for data pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
@@ -157,7 +157,7 @@ master:
     # system. You'll probably want to increase it.
     size: 2Gi  
 
-  ## Node tolerations for alertmanager scheduling to nodes with taints
+  ## Node tolerations for master scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
@@ -166,7 +166,7 @@ master:
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
-  ## Node labels for alertmanager pod assignment
+  ## Node labels for master pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
