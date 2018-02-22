@@ -25,6 +25,7 @@ data:
           timeout_override:
           continue_if_exception: False
           disable_action: False
+          ignore_empty_list: {{ .Values.curator.options.ignoreEmptyList }}
         filters:
         - filtertype: age
           source: name
@@ -36,6 +37,25 @@ data:
           stats_result:
           epoch:
           exclude: False
+      2:
+        action: close
+        description: Close old indices
+        options:
+          delete_aliases: False
+          disable_action: {{ .Values.curator.close.disabled }}
+          ignore_empty_list: {{ .Values.curator.options.ignoreEmptyList }}
+        filters:
+        - filtertype: age
+          source: name
+          direction: older
+          timestring: '{{ .Values.curator.close.age.timestring }}'
+          unit: {{ .Values.curator.close.age.unit }}
+          unit_count: {{ .Values.curator.close.age.unit_count }}
+          field:
+          stats_result:
+          epoch:
+          exclude: False
+
   config.yml: |-
     ---
     # Remember, leave a key empty if there is no value.  None will be a string,
