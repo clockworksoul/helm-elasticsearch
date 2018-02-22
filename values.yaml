@@ -57,6 +57,20 @@ client:
     NODE_INGEST: "true"
     HTTP_ENABLE: "true"
 
+  ## Node tolerations for client scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  ## Node labels for client pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
 # Data nodes hold the shards that contain the documents you have indexed. Data
 # nodes handle data related operations like CRUD, search, and aggregations. 
 # These operations are I/O-, memory-, and CPU-intensive. It is important to 
@@ -91,6 +105,20 @@ data:
     # This is a default value, and will not be sufficient in a production
     # system. You'll probably want to increase it.
     size: 12Gi
+
+  ## Node tolerations for data scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  ## Node labels for data pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
 
 # The master node is responsible for lightweight cluster-wide actions such as
 # creating or deleting an index, tracking which nodes are part of the 
@@ -129,9 +157,26 @@ master:
     # system. You'll probably want to increase it.
     size: 2Gi  
 
+  ## Node tolerations for master scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  ## Node labels for master pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
 curator:
   enabled: true
   schedule: "0 1 * * *"
+
+  options:
+    ignoreEmptyList: "True"
 
   # Allows modification of the default age-based filter. If you require more
   # sophisticated filtering, modify the action file specified in
@@ -140,6 +185,14 @@ curator:
     timestring: "%Y.%m.%d"
     unit: "days"
     unit_count: 3
+
+  # Enables close action based on age based filter
+  close:
+    disabled: "True"
+    age:
+      timestring: "%Y.%m.%d"
+      unit: "days"
+      unit_count: 3
 
 service:
   httpPort: 9200
