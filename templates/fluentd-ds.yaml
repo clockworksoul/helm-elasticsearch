@@ -30,7 +30,7 @@ spec:
         image: {{ .Values.image.fluentd.repository }}:{{ .Values.image.fluentd.tag }}
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
-            value: '{{ template "fullname" . }}-ingest.{{ .Release.Namespace }}.svc.cluster.local'
+            value: '{{ template "fullname" . }}{{ .Values.client.serviceType.internal.suffix }}.{{ .Release.Namespace }}.svc.cluster.local'
           - name:  FLUENT_ELASTICSEARCH_PORT
             value: "{{ .Values.service.httpPort }}"
           - name: FLUENT_ELASTICSEARCH_SCHEME

@@ -1,5 +1,6 @@
 {{- if .Values.kibana.enabled }}
-{{- $elasticsearchServiceName := printf "%s-%s" .Release.Name "elasticsearch" | trunc 63 -}}
+{{- $suffix := .Values.client.serviceType.internal.suffix }}
+{{- $elasticsearchServiceName := printf "%s-%s%s" .Release.Name "elasticsearch" $suffix | trunc 63 -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

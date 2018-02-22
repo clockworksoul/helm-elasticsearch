@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}{{ .Values.client.serviceType.external.suffix }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

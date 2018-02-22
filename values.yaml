@@ -43,11 +43,12 @@ client:
   antiAffinity: "soft"
   serviceType:
     internal:
-     enabled: true
      value: ClusterIP
+     suffix: "-api"
     external:
       enabled: false
       value: LoadBalancer # or NodePort if using minikube
+      suffix: ""
 
   # The amount of RAM allocated to the JVM heap. This should be set to the
   # same value as client.resources.requests.memory, or you may see
