@@ -189,7 +189,7 @@ kibana:
       #     - kibana.local
 
 fluentd:
-  enabled: true
+  enabled: false
   namespace: "kube-system"
   resources:
     limits:

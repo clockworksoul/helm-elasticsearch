@@ -1,4 +1,4 @@
-{{- if .Values.kibana.enabled }}
+{{- if .Values.fluentd.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
