@@ -1,7 +1,8 @@
+{{- if .Values.client.serviceType.internal.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}-ingest
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -10,7 +11,7 @@ metadata:
     component: {{ template "fullname" . }}
     role: client
 spec:
-  type: {{ .Values.common.serviceType }}
+  type: {{ .Values.client.serviceType.internal.value }}
   selector:
     component: {{ template "fullname" . }}
     role: client
@@ -23,3 +24,4 @@ spec:
     port: {{ .Values.service.transportPort }}
     targetPort: 9300
     protocol: TCP
+{{- end }}

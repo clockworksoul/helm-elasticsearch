@@ -10,7 +10,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: {{ template "fullname" . }}-kibana
 spec:
-  type: {{ .Values.common.serviceType }}
+  type: {{ .Values.kibana.serviceType }}
   ports:
   - port: {{ .Values.kibana.httpPort }}
     targetPort: 5601

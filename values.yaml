@@ -1,8 +1,8 @@
 image:
   es:
     repository: quay.io/pires/docker-elasticsearch-kubernetes
-    tag: 6.0.0
-    pullPolicy: Always
+    tag: 6.1.3
+    pullPolicy: IfNotPresent
   init:
     repository: busybox
     tag: latest
@@ -13,14 +13,10 @@ image:
     pullPolicy: IfNotPresent
   fluentd:
     repository: fluent/fluentd-kubernetes-daemonset
-    tag: v0.12-debian-elasticsearch
+    tag: v0.12-alpine-elasticsearch
     pullPolicy: IfNotPresent
 
 common:
-  # Defines the service type for all outward-facing (non-discovery) services.
-  # For minikube use NodePort otherwise use LoadBalancer
-  serviceType: LoadBalancer
-
   env:
     CLUSTER_NAME: "myesdb"
 
@@ -45,6 +41,13 @@ client:
   # It isn't common to need more than 2 client nodes.
   replicas: 2
   antiAffinity: "soft"
+  serviceType:
+    internal:
+     enabled: true
+     value: ClusterIP
+    external:
+      enabled: false
+      value: LoadBalancer # or NodePort if using minikube
 
   # The amount of RAM allocated to the JVM heap. This should be set to the
   # same value as client.resources.requests.memory, or you may see
@@ -168,6 +171,8 @@ kibana:
     # XPACK_ML_ENABLED: "false"
     # XPACK_REPORTING_ENABLED: "false"
     # XPACK_SECURITY_ENABLED: "false"
+  # Pay attention to serviceType v. ingress.
+  serviceType: LoadBalancer
   ingress:
     enabled: false
     # Used to create an Ingress record.

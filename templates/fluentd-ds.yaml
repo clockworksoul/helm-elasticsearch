@@ -3,7 +3,9 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}-fluentd
+{{- if .Values.fluentd.namespace }}
   namespace: {{ .Values.fluentd.namespace }}
+{{- end }}
   labels:
     app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -28,7 +30,7 @@ spec:
         image: {{ .Values.image.fluentd.repository }}:{{ .Values.image.fluentd.tag }}
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
-            value: '{{ template "fullname" . }}'
+            value: '{{ template "fullname" . }}-ingest.{{ .Release.Namespace }}.svc.cluster.local'
           - name:  FLUENT_ELASTICSEARCH_PORT
             value: "{{ .Values.service.httpPort }}"
           - name: FLUENT_ELASTICSEARCH_SCHEME
