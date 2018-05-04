@@ -20,6 +20,14 @@ spec:
         component: {{ template "fullname" . }}
         role: data
     spec:
+      {{- if .Values.data.tolerations }}
+      tolerations:
+{{ toYaml .Values.data.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.data.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.data.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:

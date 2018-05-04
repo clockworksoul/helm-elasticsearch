@@ -17,6 +17,14 @@ spec:
         component: {{ template "fullname" . }}
         role: client
     spec:
+      {{- if .Values.client.tolerations }}
+      tolerations:
+{{ toYaml .Values.client.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.client.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.client.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if eq .Values.client.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
