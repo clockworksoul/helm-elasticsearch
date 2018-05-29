@@ -90,6 +90,7 @@ spec:
           name: transport
           protocol: TCP
         livenessProbe:
+          initialDelaySeconds: 20
           tcpSocket:
             port: 9300
         volumeMounts:
