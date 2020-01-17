@@ -19,7 +19,7 @@ We truncate at 53 chars (63 - len("-discovery")) because some Kubernetes name fi
 Return the appropriate apiVersion for Curactor cron job.
 */}}
 {{- define "curator.cronJob.apiVersion" -}}
-{{- if ge .Capabilities.KubeVersion.Minor "8" -}}
+{{- if semverCompare ">= 1.8-0" .Capabilities.KubeVersion.GitVersion -}}
 "batch/v1beta1"
 {{- else -}}
 "batch/v2alpha1"
