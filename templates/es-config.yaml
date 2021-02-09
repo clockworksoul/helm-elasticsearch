@@ -1,0 +1,35 @@
+{{- if .Values.configmap.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-es-config
+  labels:
+    app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "fullname" . }}
+data:
+  elasticsearch.yml: |-
+    node.master: ${NODE_MASTER}
+    node.data: ${NODE_DATA}
+    node.ingest: ${NODE_INGEST}
+    node.name: ${NODE_NAME}
+    node.max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES:1}
+    cluster.name: ${CLUSTER_NAME}
+    network.host: ${NETWORK_HOST:_site_,_local_}
+    path.data: /data/data
+    path.logs: /data/log
+    bootstrap.memory_lock: ${MEMORY_LOCK:false}
+    discovery.zen.ping.unicast.hosts: ${DISCOVERY_SERVICE}
+    discovery.zen.minimum_master_nodes: ${NUMBER_OF_MASTERS}
+    http.enabled: ${HTTP_ENABLE}
+    http.compression: true
+    http.cors.enabled: ${HTTP_CORS_ENABLE:false}
+    xpack.security.enabled: ${XPACK_SECURITY:false}
+    xpack.ml.enabled: ${XPACK_ML:false}
+    xpack.graph.enabled: ${XPACK_GRAPH:false}
+    xpack.watcher.enabled: ${XPACK_WATCHER:false}
+    xpack.monitoring.enabled: ${XPACK_MONITORING:false}
+{{- end }}
+

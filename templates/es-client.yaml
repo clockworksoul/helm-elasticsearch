@@ -97,7 +97,17 @@ spec:
         volumeMounts:
         - name: storage
           mountPath: /data
+        {{- if .Values.configmap.enabled }}
+        - name: cfgmap
+          mountPath: /mnt/cfgmap
+        {{- end }}
       volumes:
-          - emptyDir:
-              medium: ""
-            name: "storage"
+        - emptyDir:
+            medium: ""
+          name: "storage"
+        {{- if .Values.configmap.enabled }}
+        - name: "cfgmap"
+          configMap:
+            name: {{ template "fullname" . }}-es-config
+            defaultMode: 0666
+        {{- end }}
