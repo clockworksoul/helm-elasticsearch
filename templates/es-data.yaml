@@ -96,7 +96,7 @@ spec:
           periodSeconds: 10
         volumeMounts:
         - name: storage
-          mountPath: /data
+          mountPath: {{ .Values.common.stateful.dataDir }}
       {{- if not .Values.common.stateful.enabled }}
       volumes:
         - emptyDir:
