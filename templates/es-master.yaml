@@ -1,4 +1,4 @@
-apiVersion: {{ if .Values.common.stateful.enabled }}apps/v1beta1{{ else }}extensions/v1beta1{{ end }}
+apiVersion: {{ if .Values.common.stateful.enabled }}apps/v1beta2{{ else }}extensions/v1beta1{{ end }}
 kind: {{ if .Values.common.stateful.enabled }}StatefulSet{{ else }}Deployment{{ end }}
 metadata:
   name: {{ template "fullname" . }}-master
@@ -14,6 +14,10 @@ spec:
   serviceName: {{ template "fullname" . }}-master
   {{- end }}
   replicas: {{ .Values.master.replicas }}
+  selector:
+    matchLabels:
+      component: {{ template "fullname" . }}
+      role: master
   template:
     metadata:
       labels:
@@ -106,6 +110,9 @@ spec:
   - metadata:
       name: storage
       annotations:
+        {{- if .Values.common.stateful.gid }}
+        pv.beta.kubernetes.io/gid: {{ .Values.common.stateful.gid | quote }}
+        {{- end }}
         volume.beta.kubernetes.io/storage-class: {{ .Values.common.stateful.class }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
