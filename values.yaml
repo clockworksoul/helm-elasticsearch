@@ -133,6 +133,9 @@ curator:
   enabled: true
   schedule: "0 1 * * *"
 
+  options:
+    ignoreEmptyList: "True"
+
   # Allows modification of the default age-based filter. If you require more
   # sophisticated filtering, modify the action file specified in
   # templates/es-curator-config.yaml.
@@ -140,6 +143,14 @@ curator:
     timestring: "%Y.%m.%d"
     unit: "days"
     unit_count: 3
+
+  # Enables close action based on age based filter
+  close:
+    disabled: "True"
+    age:
+      timestring: "%Y.%m.%d"
+      unit: "days"
+      unit_count: 3
 
 service:
   httpPort: 9200
