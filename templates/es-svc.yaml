@@ -9,6 +9,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: {{ template "fullname" . }}
     role: client
+{{ if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{ end }}
 spec:
   type: {{ .Values.common.serviceType }}
   selector:
